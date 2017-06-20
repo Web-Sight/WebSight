@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>OpenCV JS Binding - Image Processing Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    </style>
+</head>
+
+<body>
+
+    <div class="spinner" id='spinner'></div>
+    <div class="emscripten">
+        <progress value="0" max="100" id="progress" hidden=1></progress>
+    </div>
+
+    <div id="showcase">
+        <div id="title">
+            <p>WebSight</p>
+            <br>
+
+        </div>
+        <button onclick="reset()">reset</button>
+        <input type="file" id="input" name="file" />
+
+        <div>
+            <div class="holder">
+                <canvas id="real-wasm"></canvas><br>
+                WASM
+            </div>
+            <div class="holder">
+                <canvas id="real-asm"></canvas><br>
+                ASM
+            </div>
+            <div class="holder">
+                <canvas id="real-js"></canvas><br>
+                JS
+            </div>
+        </div>
+        <canvas class="real" id="canvas-wasm"></canvas>
+        <canvas class="real" id="canvas-asm"></canvas>
+        <canvas class="real" id="canvas-js"></canvas>
+    </div>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <!--<script src="node_modules/jquery.facedetection/dist/jquery.facedetection.min.js"></script>-->
+    <script src="haar-detector.min.js"></script>
+    <script src="haarcascade_frontalface_alt.js"></script>
+    <script src="haarcascade_eye.js"></script>
+    <script src='dat.gui.js'></script>
+    <script src="parallel.min.js"></script>
+    <script src="main.js"></script>
+
+    <!--<script src="functions.js"></script>-->
+
+</body>
