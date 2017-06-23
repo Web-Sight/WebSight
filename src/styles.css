@@ -7,6 +7,10 @@
     padding: 5px;
     width: 32%;
 }
+.canvasHolder{
+    min-height: 200px;
+
+}
 
 canvas{
    display: inline-block;
