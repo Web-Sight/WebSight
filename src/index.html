@@ -10,9 +10,7 @@
 
     </style>
 </head>
-
 <body>
-
     <div class="spinner" id='spinner'></div>
     <div class="emscripten">
         <progress value="0" max="100" id="progress" hidden=1></progress>
@@ -25,19 +23,25 @@
 
         </div>
         <button onclick="reset()">reset</button>
+        <button onclick="detectFace()">Face Detect</button>
+        <button onclick="detectEyes()">Eye Detect</button>
         <input type="file" id="input" name="file" />
 
         <div>
             <div class="holder">
+                <div class="canvasHolder">
                 <canvas id="real-wasm"></canvas><br>
+                </div>
                 WASM
             </div>
             <div class="holder">
-                <canvas id="real-asm"></canvas><br>
+                  <div class="canvasHolder">
+                <canvas id="real-asm"></canvas><br> </div>
                 ASM
             </div>
             <div class="holder">
-                <canvas id="real-js"></canvas><br>
+                  <div class="canvasHolder">
+                <canvas id="real-js"></canvas><br> </div>
                 JS
             </div>
         </div>

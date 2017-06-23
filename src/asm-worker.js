@@ -1,3 +1,2 @@
 var Module = {};
-importScripts('cv-asm.js');
-importScripts('worker.js');
+importScripts('cv-asm.js', 'worker.js');
