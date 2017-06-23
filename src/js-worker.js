@@ -1,37 +1,49 @@
 importScripts('haarcascade_frontalface_alt.js');
-importScripts('haar-detector.min.js');
+importScripts('haar-detector.noDOM.min.js');
+importScripts('haarcascade_eye.js');
 
-// let img = new Image();
+function featureDetect(imageData, feature) {
+  let trainingSet;
 
-function faceDetect(imageData, imageDataRaw) {
-    new HAAR.Detector(haarcascade_frontalface_alt, false)
-        .image(img, .5)
-        .interval(40)
-        .selection('auto')
-        .complete(function () {
-            let message = [];
-            let i;
-            let rect;
-            let l = this.objects.length;   
-            
-            for (i = 0; i < l; i++) {
-                rect = this.objects[i];
-                // imageData.strokeRect(rect.x, rect.y, rect.width, rect.height);
-                message.push({x:rect.x, y:rect.y, width:rect.width, height:rect.height})
-            }
-            postMessage(message);
+  switch(feature) {
+    case 'face':
+      trainingSet = haarcascade_frontalface_alt;
+      break;
+    case 'eyes':
+      trainingSet = haarcascade_eye;
+      break;
+    default:
+      console.log(`${feature} not found`);
+      postMessage({message: null, length: 0});
+      return;
+  }
 
-        })
-        // .cannyThreshold({ low: 90, high: 200 })
-        // .detect(1, 1.1, 0.12, 1, true);
+  new HAAR.Detector(trainingSet, false)
+    .image(imageData, 1)
+    .interval(40)
+    .selection('auto')
+    .complete(function () {
+        let rects = [];
+        let rect;
+        let l = this.objects.length;   
+        
+        for (let i = 0; i < l; i++) {
+            rect = this.objects[i];
+            rects.push({x:rect.x, y:rect.y, width:rect.width, height:rect.height})
+        }
+
+        postMessage({features : rects});
+
+    })
+    .cannyThreshold({ low: 90, high: 200 })
+    .detect(1, 1.1, 0.12, 1, true);
 }
 
 self.onmessage = function (e) {
   if (e.data.cmd === 'faceDetect') {
-      console.log(e.data)
-    faceDetect(e.data.img, e.data.imgRaw);
+    featureDetect(e.data.img, 'face');
   }
-	else if (e.data.cmd === 'eyesDetect') {
-		eyesDetect(e.data.img);
-	}
+  else if (e.data.cmd === 'eyesDetect') {
+    featureDetect(e.data.img, 'eyes');
+  }
 }

@@ -3,214 +3,185 @@ let wasmWorker = new Worker('wasm-worker.js');
 let jsWorker = new Worker('js-worker.js');
 let asmWorker = new Worker('asm-worker.js');
 
-//assigning Canvas variables for later assignment & transfer to workers
-let ctxWasm, ctxAsm, ctxJS, ctxRealWasm, ctxRealAsm, ctxRealJs, canvasWidth, canvasHeight, perfwasm0, perfasm0, perfJS0, perfwasm1, perfasm1, perfjs1, fn;
-//image object to store saved images
+let wasmCanvas = {color: 'rgba(255, 0, 0, 1)', scale: 2}, 
+    asmCanvas = {color: 'rgba(0, 0, 255, 1)', scale: 2}, 
+    jsCanvas = {color: 'rgba(75,221,17,1)', scale: 2};
+
+let perfwasm0, perfasm0, perfJS0, perfwasm1, perfasm1, perfjs1;
 let img = new Image();
 
 function reset() {
-  ctxAsm.drawImage(img, 0, 0);
-  ctxRealAsm.drawImage(img, 0, 0);
-  // ctxWasm.drawImage(img, 0, 0);
-  ctxRealWasm.drawImage(img, 0, 0);
-  ctxJS.drawImage(img, 0, 0);
-  ctxRealJS.drawImage(img, 0, 0);
+  wasmCanvas.holder.context.drawImage(img, 0, 0);
+  asmCanvas.holder.context.drawImage(img, 0, 0);
+  jsCanvas.holder.context.drawImage(img, 0, 0);
+  wasmCanvas.real.context.drawImage(img, 0, 0);
+  asmCanvas.real.context.drawImage(img, 0, 0);
+  jsCanvas.real.context.drawImage(img, 0, 0);
 }
 
 function detectFace() {  
   perfasm0 = performance.now();
-  startAsmWorker(ctxRealAsm.getImageData(0, 0, canvasWidth||200, canvasHeight||200), 'faceDetect');
+  startAsmWorker(asmCanvas.real.context.getImageData(0, 0, asmCanvas.real.canvas.width || 200, asmCanvas.real.canvas.height || 200), 'faceDetect');
   perfwasm0 = performance.now();
-  startWasmWorker(ctxRealWasm.getImageData(0, 0, canvasWidth||200, canvasHeight||200), 'faceDetect');
-  fn = 'face';
-}
-function detectEyes() {
-  perfasm0 = performance.now();
-  startAsmWorker(ctxRealAsm.getImageData(0, 0, canvasWidth||200, canvasHeight||200), 'eyesDetect');
-  perfwasm0 = performance.now();
-  startWasmWorker(ctxRealWasm.getImageData(0, 0, canvasWidth||200, canvasHeight||200), 'eyesDetect');  
-  fn = 'eyes';
+  startWasmWorker(wasmCanvas.real.context.getImageData(0, 0, wasmCanvas.real.canvas.width || 200, wasmCanvas.real.canvas.height || 200), 'faceDetect');
+  perfJS0 = performance.now();
+  startJSWorker(jsCanvas.real.context.getImageData(0, 0, jsCanvas.real.canvas.width || 200, jsCanvas.real.canvas.height || 200), 'faceDetect');
 }
 
-// function detectFaceWasm() {
-//   perfwasm0 = performance.now();
-//   startWasmWorker(ctxWasm.getImageData(0, 0, canvasWidth, canvasHeight), 'faceDetect');
-// }
-// 
-// function detectFaceAsm() {
-//   perfasm0 = performance.now();
-//   startAsmWorker(ctxWasm.getImageData(0, 0, canvasWidth, canvasHeight), 'faceDetect');
-// }
-// 
-function detectFaceJs(obj) {
+function detectEyes() {
+  perfasm0 = performance.now();
+  startAsmWorker(asmCanvas.real.context.getImageData(0, 0, asmCanvas.real.canvas.width || 200, asmCanvas.real.canvas.height || 200), 'eyesDetect');
+  perfwasm0 = performance.now();
+  startWasmWorker(wasmCanvas.real.context.getImageData(0, 0, wasmCanvas.real.canvas.width || 200, wasmCanvas.real.canvas.height || 200), 'eyesDetect');  
   perfJS0 = performance.now();
-  getFaceJS(obj);
+  startJSWorker(jsCanvas.real.context.getImageData(0, 0, jsCanvas.real.canvas.width || 200, jsCanvas.real.canvas.height || 200), 'eyesDetect');
 }
 
 function startWasmWorker(imageData, command) {
-  let message = { cmd: command, img: imageData };
+  wasmCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
+  let message = { cmd: command, img: wasmCanvas.holder.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height))};
 
   wasmWorker.postMessage(message);
 }
 
 function startAsmWorker(imageData, command) {
-  let message = { cmd: command, img: imageData, type: "asm" };
+  asmCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
+  let message = { cmd: command, img: asmCanvas.holder.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height))};
 
   asmWorker.postMessage(message);
 }
 
+function startJSWorker(imageData, command) {
+  jsCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
+  let message = { cmd: command, img: jsCanvas.holder.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height))};
+  jsWorker.postMessage(message);
+}
 
-function updateCanvas(e, id) {
-  let data = e.data.data; 	// output is a Uint8Array that aliases directly into the Emscripten heap
-
-  channels = e.data.channels;
-  channelSize = e.data.channelSize;
-
-  let canvas = document.getElementById(id);
-
-  ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  canvas.width = e.data.width;
-  canvas.height = e.data.height;
-
-  imdata = ctx.createImageData(canvas.width, canvas.height);
-
-  for (let i = 0, j = 0; i < data.length; i += channels, j += 4) {
-    imdata.data[j] = data[i];
-    imdata.data[j + 1] = data[i + 1 % channels];
-    imdata.data[j + 2] = data[i + 2 % channels];
-    imdata.data[j + 3] = 255;
+function updateCanvas(e, canvas) {
+  //canvas.real.context.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.real.context.strokeStyle = canvas.color;
+  canvas.real.context.lineWidth = 2;
+  for (let i = 0; i < e.data.features.length; i++) {
+    let rect = e.data.features[i];
+    canvas.real.context.strokeRect(rect.x * canvas.scale, rect.y * canvas.scale, rect.width * canvas.scale, rect.height * canvas.scale);
   }
-  ctx.putImageData(imdata, 0, 0);
 }
 
 wasmWorker.onmessage = function (e) {
-  updateCanvas(e, 'canvas-wasm');
+  updateCanvas(e, wasmCanvas);
   perfwasm1 = performance.now();
   console.log(`WASM: ${perfwasm1 - perfwasm0}`);
-  ctxRealWasm.drawImage(document.getElementById('canvas-wasm'), 0, 0);
-
 }
 asmWorker.onmessage = function (e) {
-  updateCanvas(e, 'canvas-asm');
+  updateCanvas(e, asmCanvas);
   perfasm1 = performance.now();
   console.log(`ASM: ${perfasm1 - perfasm0}`);
-  ctxRealAsm.drawImage(document.getElementById('canvas-asm'), 0, 0);
-  perfJS0 = performance.now();
-  detectFaceJs(fn);
 }
 
+jsWorker.onmessage = function(e) {
+  updateCanvas(e, jsCanvas);
+  perfjs1 = performance.now();
+  console.log(`JS: ${perfjs1 - perfJS0}`)
+}
 
-
-let inputElement = document.getElementById("input");
-inputElement.addEventListener("change", handleFiles);
+let inputElement = document.getElementById('input');
+inputElement.addEventListener('change', handleFiles);
 
 function handleFiles(e) {
-  let canvasWasm = document.getElementById('canvas-wasm');
-  let canvasAsm = document.getElementById('canvas-asm');
-  let canvasJS = document.getElementById('canvas-js');
-  let canvasRealWasm = document.getElementById('real-wasm');
-  let canvasRealAsm = document.getElementById('real-asm');
-  let canvasRealJS = document.getElementById('real-js');
-  console.log("img data", img.width, img.height)
-  canvasWidth = 600 / 1.5;
-  canvasHeight = 400 / 1.5;
-  ctxWasm = canvasWasm.getContext('2d');
-  ctxAsm = canvasAsm.getContext('2d');
-  ctxJS = canvasJS.getContext('2d');
-  ctxRealWasm = canvasRealWasm.getContext('2d');
-  ctxRealAsm = canvasRealAsm.getContext('2d');
-  ctxRealJS = canvasRealJS.getContext('2d');
+  wasmCanvas.holder = { canvas: document.getElementById('canvas-wasm') };
+  asmCanvas.holder = { canvas: document.getElementById('canvas-asm') };
+  jsCanvas.holder = { canvas: document.getElementById('canvas-js') };
+  wasmCanvas.real = { canvas: document.getElementById('real-wasm') };
+  asmCanvas.real = { canvas: document.getElementById('real-asm') };
+  jsCanvas.real = { canvas: document.getElementById('real-js') };
+
+  wasmCanvas.holder.context = wasmCanvas.holder.canvas.getContext('2d');
+  asmCanvas.holder.context = asmCanvas.holder.canvas.getContext('2d');
+  jsCanvas.holder.context = jsCanvas.holder.canvas.getContext('2d');
+  wasmCanvas.real.context = wasmCanvas.real.canvas.getContext('2d');
+  asmCanvas.real.context = asmCanvas.real.canvas.getContext('2d');
+  jsCanvas.real.context = jsCanvas.real.canvas.getContext('2d');
   let url = URL.createObjectURL(e.target.files[0]);
   img.onload = function () {
-    canvasWidth = canvasRealWasm.width = canvasRealAsm.width = canvasRealJS.width = canvasWasm.width = canvasAsm.width = canvasJS.width = img.width;
-    canvasHeight = canvasRealWasm.height = canvasRealAsm.height = canvasRealJS.height = canvasWasm.height = canvasAsm.height = canvasJS.height = img.height;
-    ctxWasm.drawImage(img, 0, 0);
-    ctxAsm.drawImage(img, 0, 0);
-    // ctxJS.drawImage(img, 0, 0);
-    ctxRealWasm.drawImage(img, 0, 0);
-    ctxRealAsm.drawImage(img, 0, 0);
-    ctxRealJS.drawImage(img, 0, 0);
+      wasmCanvas.real.canvas.width 
+      = asmCanvas.real.canvas.width 
+      = jsCanvas.real.canvas.width 
+      = wasmCanvas.holder.canvas.width 
+      = asmCanvas.holder.canvas.width 
+      = jsCanvas.holder.canvas.width 
+      = img.width;
+
+      wasmCanvas.real.canvas.height 
+      = asmCanvas.real.canvas.height 
+      = jsCanvas.real.canvas.height 
+      = wasmCanvas.holder.canvas.height 
+      = asmCanvas.holder.canvas.height 
+      = jsCanvas.holder.canvas.height 
+      = img.height;
+      
+      reset();
   }
 
   img.src = url;
 }
 
-let container;
-let Control = {
-  'Detect face(all)': detectFace,
-  'Detect eyes(all)': detectEyes,
-};
-
-
-function getFaceJS(obj) {
-  perfjs0 = performance.now();
-  let detector;  
-  if (obj === 'face') detector = new HAAR.Detector(haarcascade_frontalface_alt, false);
-  else {
-    detector = new HAAR.Detector(haarcascade_eye, false);
-  }
-  detector.image(img, .5)
-    .interval(40)
-    .selection('auto')
-    .complete(function () {
-      let i;
-      let rect;
-      let l = this.objects.length;
-      ctxJS.strokeStyle = "rgba(75,221,17,1)";
-      ctxJS.lineWidth = 4;
-      for (i = 0; i < l; i++) {
-        rect = this.objects[i];
-        ctxJS.strokeRect(rect.x, rect.y, rect.width||200, rect.height||200);
-      }
-      perfjs1 = performance.now();
-      console.log(`JS: ${perfjs1 - perfJS0}`)
-      ctxRealJS.drawImage(document.getElementById('canvas-js'), 0, 0);
-    })
-    .cannyThreshold({ low: 90, high: 200 })
-    .detect(1, 1.1, 0.12, 1, true)
-}
-// function init() {
-//   container = document.createElement('div');
-//   document.body.appendChild(container);
-
-//   gui = new dat.GUI({ autoPlace: false });
-//   document.body.appendChild(gui.domElement);
-//   gui.domElement.style.position = "absolute";
-//   gui.domElement.style.top = "0px";
-//   gui.domElement.style.right = "5px";
-
-//   gui.add(Control, ['Detect eyes(all)']);
-//   gui.add(Control, ['Detect face(all)']);
-// };
-
-// init();
 window.onload=function(){
   setTimeout(function() {
-  let canvasWasm = document.getElementById('canvas-wasm');
-  let canvasAsm = document.getElementById('canvas-asm');
-  let canvasJS = document.getElementById('canvas-js');
-  let canvasRealWasm = document.getElementById('real-wasm');
-  let canvasRealAsm = document.getElementById('real-asm');
-  let canvasRealJS = document.getElementById('real-js');
-  console.log("img data", img.width, img.height)
-  canvasWidth = 600 / 1.5;
-  canvasHeight = 400 / 1.5;
-  ctxWasm = canvasWasm.getContext('2d');
-  ctxAsm = canvasAsm.getContext('2d');
-  ctxJS = canvasJS.getContext('2d');
-  ctxRealWasm = canvasRealWasm.getContext('2d');
-  ctxRealAsm = canvasRealAsm.getContext('2d');
-  ctxRealJS = canvasRealJS.getContext('2d');
-    canvasWidth = canvasRealWasm.width = canvasRealAsm.width = canvasRealJS.width = canvasWasm.width = canvasAsm.width = canvasJS.width = img.width;
-    canvasHeight = canvasRealWasm.height = canvasRealAsm.height = canvasRealJS.height = canvasWasm.height = canvasAsm.height = canvasJS.height = img.height;
-    ctxWasm.drawImage(img, 0, 0);
-    ctxAsm.drawImage(img, 0, 0);
-    // ctxJS.drawImage(img, 0, 0);
-    ctxRealWasm.drawImage(img, 0, 0);
-    ctxRealAsm.drawImage(img, 0, 0);
-    ctxRealJS.drawImage(img, 0, 0);
+    wasmCanvas.holder = { canvas: document.getElementById('canvas-wasm') };
+    asmCanvas.holder = { canvas: document.getElementById('canvas-asm') };
+    jsCanvas.holder = { canvas: document.getElementById('canvas-js') };
+    wasmCanvas.real = { canvas: document.getElementById('real-wasm') };
+    asmCanvas.real = { canvas: document.getElementById('real-asm') };
+    jsCanvas.real = { canvas: document.getElementById('real-js') };
+
+    wasmCanvas.holder.context = wasmCanvas.holder.canvas.getContext('2d');
+    asmCanvas.holder.context = asmCanvas.holder.canvas.getContext('2d');
+    jsCanvas.holder.context = jsCanvas.holder.canvas.getContext('2d');
+    wasmCanvas.real.context = wasmCanvas.real.canvas.getContext('2d');
+    asmCanvas.real.context = asmCanvas.real.canvas.getContext('2d');
+    jsCanvas.real.context = jsCanvas.real.canvas.getContext('2d');
+
+    wasmCanvas.real.canvas.width 
+      = asmCanvas.real.canvas.width 
+      = jsCanvas.real.canvas.width 
+      = wasmCanvas.holder.canvas.width 
+      = asmCanvas.holder.canvas.width 
+      = jsCanvas.holder.canvas.width 
+      = img.width;
+
+      wasmCanvas.real.canvas.height 
+      = asmCanvas.real.canvas.height 
+      = jsCanvas.real.canvas.height 
+      = wasmCanvas.holder.canvas.height 
+      = asmCanvas.holder.canvas.height 
+      = jsCanvas.holder.canvas.height 
+      = img.height;
+      
+    reset();
+
+    // let canvasWasm = document.getElementById('canvas-wasm');
+    // let canvasAsm = document.getElementById('canvas-asm');
+    // let canvasJS = document.getElementById('canvas-js');
+    // let canvasRealWasm = document.getElementById('real-wasm');
+    // let canvasRealAsm = document.getElementById('real-asm');
+    // let canvasRealJS = document.getElementById('real-js');
+    // console.log("img data", img.width, img.height)
+    // canvasWidth = 600 / 1.5;
+    // canvasHeight = 400 / 1.5;
+    // ctxWasm = canvasWasm.getContext('2d');
+    // ctxAsm = canvasAsm.getContext('2d');
+    // ctxJS = canvasJS.getContext('2d');
+    // ctxRealWasm = canvasRealWasm.getContext('2d');
+    // ctxRealAsm = canvasRealAsm.getContext('2d');
+    // ctxRealJS = canvasRealJS.getContext('2d');
+    //   canvasWidth = canvasRealWasm.width = canvasRealAsm.width = canvasRealJS.width = canvasWasm.width = canvasAsm.width = canvasJS.width = img.width;
+    //   canvasHeight = canvasRealWasm.height = canvasRealAsm.height = canvasRealJS.height = canvasWasm.height = canvasAsm.height = canvasJS.height = img.height;
+    //   ctxWasm.drawImage(img, 0, 0);
+    //   ctxAsm.drawImage(img, 0, 0);
+    //   // ctxJS.drawImage(img, 0, 0);
+    //   ctxRealWasm.drawImage(img, 0, 0);
+    //   ctxRealAsm.drawImage(img, 0, 0);
+    //   ctxRealJS.drawImage(img, 0, 0);
     detectFace();
-  }, 3000);  
+    }, 3000);  
 }
