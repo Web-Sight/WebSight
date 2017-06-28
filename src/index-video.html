@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>OpenCV JS Binding - Image Processing Demo</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+</head>
+
+<body>
+	<div>
+		<div id="showcase">
+			<div>
+				<canvas id="mrCanvas" width="250" height="180"></canvas>
+				<canvas id="canvas" width="500" height="375"></canvas>
+				<video autoplay style="display:none" id="videoElement">
+			</div>
+		</div>
+		<div id="theDiv"><button onclick="paintCanvas()">click me</button></div>
+	</div>
+	<script src="main-video.js"></script>
+	<script async src="cv-wasm.js"></script>
+</body>
+</html>
