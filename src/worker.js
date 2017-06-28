@@ -1,7 +1,7 @@
 var face_cascade, eye_cascade;
 
 function loadFaceDetectTrainingSet() {
-	if (face_cascade == undefined) {	
+	if (face_cascade == undefined) {
 		face_cascade = new cv.CascadeClassifier();
 		let load = face_cascade.load('../../test/data/haarcascade_frontalface_default.xml');
 		console.log('load face detection training data', load);
@@ -9,7 +9,7 @@ function loadFaceDetectTrainingSet() {
 }
 
 function loadEyesDetectTrainingSet() {
-	if (eye_cascade == undefined) {		
+	if (eye_cascade == undefined) {
 		eye_cascade = new cv.CascadeClassifier();
 		let load = eye_cascade.load('../../test/data/haarcascade_eye.xml');
 		console.log('load eye detection training data', load);
@@ -29,17 +29,19 @@ function faceDetect(imageData) {
 	let s2 = [0, 0];
 	face_cascade.detectMultiScale(img_gray, faces, 1.1, 3, 0, s1, s2);
 
-  let rects = [];
+	let rects = [];
 
 	for (let i = 0; i < faces.size(); i += 1) {
 		let faceRect = faces.get(i);
-		rects.push({x: faceRect.x, 
-									y: faceRect.y, 
-									width: faceRect.width, 
-									height: faceRect.height });
+		rects.push({
+			x: faceRect.x,
+			y: faceRect.y,
+			width: faceRect.width,
+			height: faceRect.height
+		});
 	}
 
-	postMessage({features: rects});
+	postMessage({ features: rects });
 
 	img.delete();
 	faces.delete();
@@ -59,7 +61,7 @@ function eyesDetect(imageData) {
 	let s2 = [0, 0];
 	face_cascade.detectMultiScale(img_gray, faces, 1.1, 3, 0, s1, s2);
 
-  let rects = [];
+	let rects = [];
 
 	for (let i = 0; i < faces.size(); i += 1) {
 		let faceRect = faces.get(i);
@@ -68,32 +70,36 @@ function eyesDetect(imageData) {
 		let w = faceRect.width;
 		let h = faceRect.height;
 
-		rects.push({ x: x, 
-								 y: y, 
-								 width: w, 
-								 height: h });
-		
+		rects.push({
+			x: x,
+			y: y,
+			width: w,
+			height: h
+		});
+
 		let roiRect = new cv.Rect(x, y, w, h);
 		let roi_gray = img_gray.getROI_Rect(roiRect);
 
 		let eyes = new cv.RectVector();
 		eye_cascade.detectMultiScale(roi_gray, eyes, 1.1, 3, 0, s1, s2);
-		
+
 		for (let j = 0; j < eyes.size(); j += 1) {
 
-			let eyeRect = eyes.get(j);			
+			let eyeRect = eyes.get(j);
 
-			rects.push({ x: x + eyeRect.x,
-									 y: y + eyeRect.y,
-									 width: eyeRect.width,
-									 height: eyeRect.height} );
+			rects.push({
+				x: x + eyeRect.x,
+				y: y + eyeRect.y,
+				width: eyeRect.width,
+				height: eyeRect.height
+			});
 		}
 
 		eyes.delete();
 		roi_gray.delete();
 	}
 
-	postMessage({features: rects});
+	postMessage({ features: rects });
 
 	img.delete();
 	faces.delete();

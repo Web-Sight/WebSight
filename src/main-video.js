@@ -1,4 +1,5 @@
 let wasmWorker = new Worker('wasm-worker.js');
+let asmWorker = new Worker('asm-worker.js');
 
 let video = document.querySelector("#videoElement");
 let face_cascade;
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function handleVideo(stream) {
     video.src = window.URL.createObjectURL(stream);
-    console.log(video)
+    // console.log(video)
 }
 
 clickme2 = () => {
@@ -43,32 +44,39 @@ clickme2 = () => {
 
     canvases.dummy.canvas.width = canvases.wasm.canvas.width = canvases.asm.canvas.width = video.width;
     canvases.dummy.canvas.height = canvases.wasm.canvas.height = canvases.asm.canvas.height = video.height;    
+    console.log(`object created`)
 }
 
 function detectFace() {
-    startWasmWorker(canvases.wasm.context.getImageData(0, 0, canvases.wasm.canvas.width || 200, canvases.wasm.canvas.height || 200), 'faceDetect');
+    startWorker(canvases.wasm.context.getImageData(0, 0, canvases.wasm.canvas.width || 200, canvases.wasm.canvas.height || 200), 'faceDetect','wasm');
+    startWorker(canvases.asm.context.getImageData(0, 0, canvases.asm.canvas.width || 200, canvases.asm.canvas.height || 200), 'faceDetect','asm');
 }
 
-function startWasmWorker(imageData, command) {    
+function startWorker(imageData, command, type) {    
     canvases.dummy.context.drawImage(wasm, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
     let message = { cmd: command, img: canvases.dummy.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height)) };
-    wasmWorker.postMessage(message);
+    if(type == 'wasm') wasmWorker.postMessage(message);
+    else asmWorker.postMessage(message);
 }
 
-function updateCanvas(e, canvas) {
-    canvases.wasm.context.drawImage(video, 0, 0, canvases.wasm.canvas.width, canvases.wasm.canvas.height);
-    canvas.wasm.context.strokeStyle = canvases.wasm.color;    
-    canvas.wasm.context.lineWidth = 2;
+function updateCanvas(e, targetCanvas) {
+    targetCanvas.context.drawImage(video, 0, 0, targetCanvas.canvas.width, targetCanvas.canvas.height);
+    targetCanvas.context.strokeStyle = targetCanvas.color;    
+    targetCanvas.context.lineWidth = 2;
     
     for (let i = 0; i < e.data.features.length; i++) {
         let rect = e.data.features[i];        
-        canvas.wasm.context.strokeRect(rect.x * canvas.scale, rect.y * canvas.scale, rect.width * canvas.scale, rect.height * canvas.scale);
+        targetCanvas.context.strokeRect(rect.x * canvases.scale, rect.y * canvases.scale, rect.width * canvases.scale, rect.height * canvases.scale);
     }
 }
 
 wasmWorker.onmessage = function (e) {
-    updateCanvas(e, canvases);
-    requestAnimationFrame(detectFace);
+    updateCanvas(e, canvases.wasm);
+    requestAnimationFrame(()=>startWorker(canvases.wasm.context.getImageData(0, 0, canvases.wasm.canvas.width || 200, canvases.wasm.canvas.height || 200), 'faceDetect','wasm'));
+}
+asmWorker.onmessage = function (e) {
+    updateCanvas(e, canvases.asm);
+    requestAnimationFrame(()=>startWorker(canvases.asm.context.getImageData(0, 0, canvases.asm.canvas.width || 200, canvases.asm.canvas.height || 200), 'faceDetect','asm'));
 }
 
 //wasm-module related code
