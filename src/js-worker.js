@@ -3,6 +3,7 @@ importScripts('haar-detector.noDOM.min.js');
 importScripts('haarcascade_eye.js');
 
 function featureDetect(imageData, feature) {
+  // console.log('running jsworker')
   let trainingSet;
 
   switch(feature) {
@@ -20,7 +21,7 @@ function featureDetect(imageData, feature) {
 
   new HAAR.Detector(trainingSet, false)
     .image(imageData, 1)
-    .interval(40)
+    .interval(5)
     .selection('auto')
     .complete(function () {
         let rects = [];
@@ -30,8 +31,7 @@ function featureDetect(imageData, feature) {
         for (let i = 0; i < l; i++) {
             rect = this.objects[i];
             rects.push({x:rect.x, y:rect.y, width:rect.width, height:rect.height})
-        }
-
+        }        
         postMessage({features : rects});
 
     })
@@ -47,3 +47,8 @@ self.onmessage = function (e) {
     featureDetect(e.data.img, 'eyes');
   }
 }
+self.onerror = function (e) {
+	console.log(e);
+}
+
+
