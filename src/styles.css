@@ -6,6 +6,7 @@
     text-align: center;
     padding: 5px;
     width: 32%;
+    min-width: 325px;
 }
 .canvasHolder{
     min-height: 200px;
@@ -14,6 +15,7 @@
 
 canvas{
    display: inline-block;
+
 }
 
 #canvas-test{
@@ -26,7 +28,6 @@ canvas{
 
 p{
     display: inline-block;
-    /*font-weight: bold;*/
     font-weight: 500;
     font-size: 2em;
     font-family: Courier New, Courier, monospace
@@ -35,3 +36,4 @@ p{
 #title{
     text-align: center;
 }
+
