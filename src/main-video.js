@@ -24,7 +24,6 @@ function handleVideo(stream) {
     video.src = window.URL.createObjectURL(stream);
 }
 
-clickme2 = () => {
     canvases.wasm = {};
     canvases.asm = {};
     canvases.js = {};
@@ -60,18 +59,13 @@ clickme2 = () => {
     canvases.dummy.context = canvases.dummy.canvas.getContext('2d');
     
     canvases.chart = {};
-    // canvases.chart.canvas = document.getElementById('chart');
-    // canvases.chart.context = canvases.chart.canvas.getContext('2d');
+    canvases.chart.canvas = document.getElementById('chart');
+    canvases.chart.context = canvases.chart.canvas.getContext('2d');
 
-    canvases.dummy.canvas.width = 320
-    canvases.dummy.canvas.height =240
-    // canvases.wasm.canvas.width = canvases.asm.canvas.width = canvases.js.canvas.width = canvases.chart.canvas.width = 320
-    // canvases.wasm.canvas.height = canvases.asm.canvas.height = canvases.js.canvas.height = canvases.chart.canvas.height = 240;
-    canvases.wasm.canvas.width = canvases.asm.canvas.width = canvases.js.canvas.width = 200
-    canvases.wasm.canvas.height = canvases.asm.canvas.height = canvases.js.canvas.height = 150;
+    canvases.dummy.canvas.width = canvases.wasm.canvas.width = canvases.asm.canvas.width = canvases.js.canvas.width = canvases.chart.canvas.width = 320
+    canvases.dummy.canvas.height = canvases.wasm.canvas.height = canvases.asm.canvas.height = canvases.js.canvas.height = canvases.chart.canvas.height = 240;
 
     console.log(`object created`)
-}
 
 function detectFace() {
     startWorker(canvases.wasm.context.getImageData(0, 0, canvases.wasm.canvas.width || 200, canvases.wasm.canvas.height || 200), 'faceDetect', 'wasm');
@@ -92,7 +86,7 @@ function updateCanvas(e, targetCanvas) {
     targetCanvas.context.drawImage(video, 0, 0, targetCanvas.canvas.width, targetCanvas.canvas.height);
     targetCanvas.context.strokeStyle = targetCanvas.color;
     targetCanvas.context.lineWidth = 2;
-    targetCanvas.fpsArr.push(1000 / (targetCanvas.startTime - targetCanvas.lastTime));
+    targetCanvas.fpsArr.push(1000 / (Math.round(targetCanvas.startTime) - Math.round(targetCanvas.lastTime)));
     if(targetCanvas.fpsArr.length===10) {
     targetCanvas.context.fps = Math.round((targetCanvas.fpsArr.reduce((a,b)=>a + b)/10) * 100) / 100 
     targetCanvas.fpsArr = [];
