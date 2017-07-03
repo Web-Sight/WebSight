@@ -6,7 +6,7 @@ let video = document.querySelector("#videoElement");
 let face_cascade;
 let eye_cascade;
 
-var canvases = {};
+let canvases = {};
 
 // check for getUserMedia support
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
@@ -32,10 +32,6 @@ clickme2 = () => {
     canvases.wasm.fps = 0;
     canvases.asm.fps = 0;
     canvases.js.fps = 0;
-
-    canvases.wasm.graphData = wasmData;
-    canvases.asm.graphData = [];
-    canvases.wasm.graphData = [];
 
     canvases.wasm.lastTime = +new Date;
     canvases.asm.lastTime = +new Date;
@@ -63,14 +59,8 @@ clickme2 = () => {
     canvases.dummy.canvas = document.getElementById('dummy');
     canvases.dummy.context = canvases.dummy.canvas.getContext('2d');
 
-    canvases.chart = {};
-    // canvases.chart.canvas = document.getElementById('chart');
-    // canvases.chart.context = canvases.chart.canvas.getContext('2d');
-
     canvases.dummy.canvas.width = 320
     canvases.dummy.canvas.height = 240
-    // canvases.wasm.canvas.width = canvases.asm.canvas.width = canvases.js.canvas.width = canvases.chart.canvas.width = 320
-    // canvases.wasm.canvas.height = canvases.asm.canvas.height = canvases.js.canvas.height = canvases.chart.canvas.height = 240;
     canvases.wasm.canvas.width = canvases.asm.canvas.width = canvases.js.canvas.width = 200
     canvases.wasm.canvas.height = canvases.asm.canvas.height = canvases.js.canvas.height = 150;
 
@@ -100,11 +90,8 @@ function updateCanvas(e, targetCanvas, plot) {
     targetCanvas.context.drawImage(video, 0, 0, targetCanvas.canvas.width, targetCanvas.canvas.height);
     targetCanvas.context.strokeStyle = targetCanvas.color;
     targetCanvas.context.lineWidth = 2;
-
     targetCanvas.fpsArr.push(1000 / (targetCanvas.startTime - targetCanvas.lastTime));
-    // if(targetCanvas == canvases.wasm){
     plot.holder.push(1000 / (targetCanvas.startTime - targetCanvas.lastTime));
-    // }
 
     if (plot.holder.length === 20) {
         plot.displayPoints.push(Math.round((plot.holder.reduce((a, b) => a + b) / 20) * 100) / 100);
