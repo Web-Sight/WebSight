@@ -10,6 +10,7 @@
 
     </style>
 </head>
+
 <body>
     <div class="spinner" id='spinner'></div>
     <div class="emscripten">
@@ -18,30 +19,34 @@
 
     <div id="showcase">
         <div id="title">
-            <p>WebSight</p>
-            <br>
+            <ul>
+                <p id="title-text">WebSight</p>
+                <li><a href="">Video demo</a></li>
+                <li><a href="">Github</a></li>
+                <li><a href="">About us</a></li>
+            </ul>
+            <div class="button-class" id="reset-button" onclick="reset()">Reset</div>
+            <div class="button-class" id="detect-face" onclick="detectFace()">Face Detection</div>
+            <div class="button-class" id="detect-eyes" onclick="detectEyes()">Eye Detection</div>
+            <input type="file" id="input" name="file" />
 
         </div>
-        <button onclick="reset()">reset</button>
-        <button onclick="detectFace()">Face Detect</button>
-        <button onclick="detectEyes()">Eye Detect</button>
-        <input type="file" id="input" name="file" />
 
         <div>
             <div class="holder">
                 <div class="canvasHolder">
-                <canvas id="real-wasm"></canvas><br>
+                    <canvas id="real-wasm"></canvas><br>
                 </div>
                 WASM
             </div>
             <div class="holder">
-                  <div class="canvasHolder">
-                <canvas id="real-asm"></canvas><br> </div>
+                <div class="canvasHolder">
+                    <canvas id="real-asm"></canvas><br> </div>
                 ASM
             </div>
             <div class="holder">
-                  <div class="canvasHolder">
-                <canvas id="real-js"></canvas><br> </div>
+                <div class="canvasHolder">
+                    <canvas id="real-js"></canvas><br> </div>
                 JS
             </div>
         </div>

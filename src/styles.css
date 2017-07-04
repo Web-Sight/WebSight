@@ -1,20 +1,38 @@
+*{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+#the-div{
+    margin-left: 5px;
+}
+body{
+    background: #43464B;
+    margin: 0;
+    padding: 0;
+}
+#title-p{
+    margin-left: 0;
+}
 
 .holder{
     border: 1px solid black;
+    background: white;
     display: inline-block;
-    margin-top: 20px;
+    margin-top: 5px;
     text-align: center;
     padding: 5px;
     width: 32%;
+    min-width: 325px;    
 }
-.canvasHolder{
-    min-height: 200px;
 
+.canvasHolder{
+    min-height: 200px;    
 }
 
 canvas{
    display: inline-block;
 }
+
 
 #canvas-test{
     width: 50%;
@@ -24,14 +42,79 @@ canvas{
     display: none;
 }
 
-p{
-    display: inline-block;
-    /*font-weight: bold;*/
+#title-text{    
+    display: inline;
     font-weight: 500;
-    font-size: 2em;
-    font-family: Courier New, Courier, monospace
-    
+    font-size: 1.5em;
+    font-family: Courier New, Courier, monospace;      
+    margin-top: 10px;
+    margin-bottom: 0px;
+    margin-right: 10px;
+    margin-left: 10px;
+    color:white;
 }
-#title{
+
+#title{    
+    height: 23px;
+    margin-bottom: 30px;
+    background-color:#D67513; 
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#graph-holder{
+    text-align: center;   
+}
+
+#graph{
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 40px; 
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+li{
+    display:inline;
+    margin-right: 8px;    
+}
+
+a{
+    text-decoration: none;
+    color: #223DC8;
+}
+
+.button-class{
+    float: right;
+    height: 20px;
+    width: 120px;
+    display: inline-block;
+    border: 1px solid black;
+    background-color: #223DC8;
+    margin-left: 15px;    
+    font-size:12px;
+    color: white;
     text-align: center;
+    padding-top:5px;
+    border-radius: 5px;
+    margin-right: 5px;
 }
+#detect-button:hover{
+    cursor: pointer;
+}
+#button-label{
+    font-size: 12px;
+}
+
+form{
+    margin-top: 3px;
+    display: inline-block;
+    float: right;
+    color:white;
+}
+
