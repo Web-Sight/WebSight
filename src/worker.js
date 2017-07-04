@@ -17,6 +17,7 @@ function loadEyesDetectTrainingSet() {
 }
 
 function faceDetect(imageData) {
+	console.log('detecting face')
 	loadFaceDetectTrainingSet();
 
 	let img = cv.matFromArray(imageData, 24); // 24 for rgba
@@ -48,9 +49,9 @@ function faceDetect(imageData) {
 	img_gray.delete();
 }
 
-function eyesDetect(imageData) {
+function eyesDetect(imageData) {	
 	loadFaceDetectTrainingSet();
-	loadEyesDetectTrainingSet()
+	loadEyesDetectTrainingSet();
 
 	let img = cv.matFromArray(imageData, 24); // 24 for rgba
 	let img_gray = new cv.Mat();
@@ -111,7 +112,7 @@ self.onmessage = function (e) {
 		case 'faceDetect':
 			faceDetect(e.data.img);
 			break;
-		case 'eyesDetect': {
+		case 'eyesDetect': {			
 			eyesDetect(e.data.img);
 			break;
 		}

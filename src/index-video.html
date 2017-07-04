@@ -14,26 +14,39 @@
 	<div>
 		<div id="showcase">
 			<div id="title">
-				<p>WebSight v2</p>
-				<br>
+				<ul>
+					<p id="title-text">WebSight</p>
+					<li><a href="">Image demo</a></li>
+					<li><a href="">Github</a></li>
+					<li><a href="">About us</a></li>
+				</ul>
+				<div class="button-class" id="detect-button" onclick="detectFace()">Begin Detection</div>
+				<form action="">
+					<input id="radio-face" name="selector" type="radio" value="Face" checked="checked" onclick="selectObj('face')"> Face</input>
+					<input id="radio-eyes" name="selector" type="radio" value="Eyes" onclick="selectObj('eyes')"> Eyes</input>
+				</form>
 			</div>
-			<div>
+			<span id="nav">
+
+			</span>
+			<div id="the-div">
 				<div class="holder" id="wasmDiv">
-					<canvas id="wasm"></canvas> <br> WASM</div>
+					<canvas class="display-canvas" id="wasm"></canvas> <br>WebAssembly</div>
 				<div class="holder" id="asmDiv">
-					<canvas id="asm"></canvas><br> ASM.JS</div>
+					<canvas class="display-canvas" id="asm"></canvas><br>Asm.js</div>
 				<div class="holder" id="jsDiv">
-					<canvas id="js"></canvas><br> JS</div>
+					<canvas class="display-canvas" id="js"></canvas><br>JavaScript</div>
 				<canvas style="position:fixed; left:-1000px; visibility: hidden" id="dummy"></canvas>
-				<canvas id="chart"></canvas>
 				<video style="display:none" width="320" height="240" autoplay id="videoElement">
 			</div>
 		</div>
+		<!--<div id='graph-holder' style="width:375px">-->
+		<!--</div>-->
 		<div id="theDiv">
-			<button onclick="detectFace()">Click Me To Start Face Detection</button>
 		</div>
 	</div>
-	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>-->
+	<canvas id="graph"></canvas>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js'></script>
 	<script src="main-video.js"></script>
 
 </body>
