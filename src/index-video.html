@@ -11,41 +11,36 @@
 </head>
 
 <body>
-	<div>
-		<div id="showcase">
-			<div id="title">
-				<ul>
+	<div id="showcase">
+		<div id="title">
+			<ul>
+				<a href="/index-video.html">
 					<p id="title-text">WebSight</p>
-					<li><a href="">Image demo</a></li>
-					<li><a href="">Github</a></li>
-					<li><a href="">About us</a></li>
-				</ul>
-				<div class="button-class" id="detect-button" onclick="detectFace()">Begin Detection</div>
-				<form action="">
-					<input id="radio-face" name="selector" type="radio" value="Face" checked="checked" onclick="selectObj('face')"> Face</input>
-					<input id="radio-eyes" name="selector" type="radio" value="Eyes" onclick="selectObj('eyes')"> Eyes</input>
-				</form>
-			</div>
-			<span id="nav">
-
-			</span>
-			<div id="the-div">
-				<div class="holder" id="wasmDiv">
-					<canvas class="display-canvas" id="wasm"></canvas> <br>WebAssembly</div>
-				<div class="holder" id="asmDiv">
-					<canvas class="display-canvas" id="asm"></canvas><br>Asm.js</div>
-				<div class="holder" id="jsDiv">
-					<canvas class="display-canvas" id="js"></canvas><br>JavaScript</div>
-				<canvas style="position:fixed; left:-1000px; visibility: hidden" id="dummy"></canvas>
-				<video style="display:none" width="320" height="240" autoplay id="videoElement">
-			</div>
+				</a>
+				<li><a href="/index.html">Image Demo</a></li>
+				<li><a href="https://github.com/Web-Sight/WebSight">GitHub</a></li>
+				<li><a href="/about">About Us</a></li>
+			</ul>
+			<div class="button-class" id="detect-button" onclick="detect()">Begin Detection</div>
+			<form action="">
+				<input id="radio-face" name="selector" type="radio" value="Face" checked="checked" onclick="selectObj('face')"> Face</input>
+				<input id="radio-eyes" name="selector" type="radio" value="Eyes" onclick="selectObj('eyes')"> Eyes</input>
+			</form>
 		</div>
-		<!--<div id='graph-holder' style="width:375px">-->
-		<!--</div>-->
-		<div id="theDiv">
+		<div id="videoFeeds">
+			<div class="holder" id="wasmDiv">
+				<canvas class="display-canvas" id="wasm"></canvas> <br>WebAssembly</div>
+			<div class="holder" id="asmDiv">
+				<canvas class="display-canvas" id="asm"></canvas><br>Asm.js</div>
+			<div class="holder" id="jsDiv">
+				<canvas class="display-canvas" id="js"></canvas><br>JavaScript</div>
+			<canvas style="position:fixed; left:-1000px; visibility: hidden" id="dummy"></canvas>
+			<video style="display:none" width="320" height="240" autoplay id="videoElement">
 		</div>
 	</div>
-	<canvas id="graph"></canvas>
+	<div id='graphHolder'>
+		<canvas id="graph"></canvas>
+	</div>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js'></script>
 	<script src="main-video.js"></script>
 
