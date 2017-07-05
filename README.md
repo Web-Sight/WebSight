@@ -4,6 +4,6 @@ Each target is run in its own <a href="https://developer.mozilla.org/en-US/docs/
 
 The demo is accessible from http://websightjs.com.
 
-Thanks to <a href="https://github.com/ucisysarch/opencvjs">uscisysarch</a>, <a href="https://github.com/njor/opencvjs">njor</a>, and <a href="https://github.com/foo123/HAAR.js">foo123</a> for giving us a starting point.
+Thanks to <a href="https://github.com/shamadee/web-dsp">WebDSP</a> for the inspiration, and to <a href="https://github.com/ucisysarch/opencvjs">uscisysarch</a>, <a href="https://github.com/njor/opencvjs">njor</a>, and <a href="https://github.com/foo123/HAAR.js">foo123</a> for giving us a starting point.
 
 Contributors to this project are <a href="https://github.com/BrianJFeldman">BrianJFeldman</a>, <a href="https://github.com/DebraD">DebraD</a>, <a href="https://github.com/MarkGeeRomano">MarkGeeRomano</a> and <a href="https://github.com/YervantB">YervantB</a>.
