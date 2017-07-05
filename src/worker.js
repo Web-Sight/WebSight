@@ -17,7 +17,6 @@ function loadEyesDetectTrainingSet() {
 }
 
 function faceDetect(imageData) {
-	console.log('detecting face')
 	loadFaceDetectTrainingSet();
 
 	let img = cv.matFromArray(imageData, 24); // 24 for rgba
@@ -122,4 +121,5 @@ self.onmessage = function (e) {
 self.onerror = function (e) {
 	console.log(e);
 }
-console.log('done loading --worker')
+console.log('done loading worker')
+// postMessage('start')
