@@ -21,30 +21,30 @@
         <div id="title">
             <ul>
                 <p id="title-text">WebSight</p>
-                <li><a href="">Video demo</a></li>
-                <li><a href="">Github</a></li>
-                <li><a href="">About us</a></li>
+                <li><a href="./index-video.html">Video Demo</a></li>
+                <li><a style="font-weight:800 ; color:skyblue" href="./index.html">Image Demo</a></li>
+                <li><a  href="https://github.com/Web-Sight/WebSight" target="_blank">Github</a></li>
+                <li><a href="./about-us.html">About Us</a></li>
             </ul>
-            <div class="button-class" id="reset-button" onclick="reset()">Reset</div>
-            <div class="button-class" id="detect-face" onclick="detectFace()">Face Detection</div>
-            <div class="button-class" id="detect-eyes" onclick="detectEyes()">Eye Detection</div>
-            <input type="file" id="input" name="file" />
-
+            <div class="button-class small" id="reset-button" onclick="reset()">Reset</div>
+            <div class="button-class small" id="detect-face" onclick="detectFace()">Face Detection</div>
+            <div class="button-class small" id="detect-eyes" onclick="detectEyes()">Eye Detection</div>
+            <input class="upload" type="file" id="input" name="file" />
         </div>
 
         <div>
-            <div class="holder">
+            <div class="holder img-holder">
                 <div class="canvasHolder">
                     <canvas id="real-wasm"></canvas><br>
                 </div>
                 WASM
             </div>
-            <div class="holder">
+            <div class="holder img-holder">
                 <div class="canvasHolder">
                     <canvas id="real-asm"></canvas><br> </div>
                 ASM
             </div>
-            <div class="holder">
+            <div class="holder img-holder">
                 <div class="canvasHolder">
                     <canvas id="real-js"></canvas><br> </div>
                 JS

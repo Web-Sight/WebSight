@@ -101,10 +101,13 @@ a{
     color: white;
     text-align: center;
     padding-top:5px;
-    border-radius: 5px;
+    border-radius: 3px;
     margin-right: 5px;
 }
 #detect-button:hover{
+    cursor: pointer;
+}
+.button-class{
     cursor: pointer;
 }
 #button-label{
@@ -117,4 +120,81 @@ form{
     float: right;
     color:white;
 }
+
+.small{
+    width: 90px;
+    margin-left: 6px;
+}
+
+#reset-button{
+    background-color: #961b1b;
+}
+
+.upload{
+    float: right;   
+    width: 175px;
+    margin-top: 5px;
+}
+
+label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: black;
+    display: inline-block;
+    float: right;
+    cursor: pointer;
+}
+
+label:hover {
+    background-color: red;
+}
+
+.img-holder{
+    margin-top:50px;
+}
+
+.profile{
+    display: inline-block;
+    margin:0 40px; 
+}
+
+.pic img{
+    overflow: hidden;
+    width: 200px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.pic:hover img:last-child{
+    display: none;   
+}
+
+.pic:hover img:first-child{
+    display: inline-block;   
+}
+.profiles{
+    text-align: center;
+    margin-top: 65px;
+}
+
+.social-media img{
+    width: 40px;
+}
+
+.profile p{
+    color:white;
+}
+
+.mark:hover{
+    background-image: url("./headshots/red_Rect.png");
+}
+
+.rect{
+    display: none;
+}
+
+
+
+
 
