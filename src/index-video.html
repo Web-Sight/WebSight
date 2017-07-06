@@ -7,40 +7,46 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="icon" href="favicon.ico"/>
 
 </head>
 
 <body>
+	
 	<div id="showcase">
+		<img class="logo" src="./logoFinal.png" />
 		<div id="title">
-			<ul>
-				<a href="/index-video.html">
-					<p id="title-text">WebSight</p>
-					<li><a style="font-weight:800 ; color:skyblue" href="./index-video.html">Video Demo</a></li>
-					<li><a href="./index.html">Image Demo</a></li>
-					<li><a  href="https://github.com/Web-Sight/WebSight" target="_blank">Github</a></li>
-					<li><a href="./about-us.html">About Us</a></li>
-				</ul>
-				<div class="button-class" id="detect-button" onclick="detect()">Begin Detection</div>
-				<form action="">
-					<input class="radio-class" id="radio-face" name="selector" type="radio" value="Face" checked="checked" onclick="selectObj('face')">					Face</input>
-					<input class="radio-class" id="radio-eyes" name="selector" type="radio" value="Eyes" onclick="selectObj('eyes')"> Eyes</input>
-				</form>
+			<div class="logo-holder">
 			</div>
-			<span id="nav">
+			<ul>				
+				<li>
+					<p id="title-text">WebSight</p>
+				</li>
+				<li><a style="font-weight:800 ; color:skyblue" href="./index-video.html">Video Demo</a></li>
+				<li><a href="./index.html">Image Demo</a></li>
+				<li><a href="https://github.com/Web-Sight/WebSight" target="_blank">Github</a></li>
+				<li><a href="./about-us.html">About Us</a></li>
+			</ul>
+			<div class="button-class" id="detect-button" onclick="detect()">Begin Detection</div>
+			<form action="">
+				<input class="radio-class" id="radio-face" name="selector" type="radio" value="Face" checked="checked" onclick="selectObj('face')">				Face</input>
+				<input class="radio-class" id="radio-eyes" name="selector" type="radio" value="Eyes" onclick="selectObj('eyes')"> Eyes</input>
+			</form>
+		</div>
+		<span id="nav">
 
 			</span>
-			<div id="the-div">
-				<div class="holder" id="wasmDiv">
-					<canvas class="display-canvas" id="wasm"></canvas> <br>WebAssembly</div>
-				<div class="holder" id="asmDiv">
-					<canvas class="display-canvas" id="asm"></canvas><br>Asm.js</div>
-				<div class="holder" id="jsDiv">
-					<canvas class="display-canvas" id="js"></canvas><br>JavaScript</div>
-				<canvas style="position:fixed; left:-1000px; visibility: hidden" id="dummy"></canvas>
-				<video style="display:none" width="320" height="240" autoplay id="videoElement">
-			</div>
+		<div id="the-div">
+			<div class="holder" id="wasmDiv">
+				<canvas class="display-canvas" id="wasm"></canvas> <br>WebAssembly</div>
+			<div class="holder" id="asmDiv">
+				<canvas class="display-canvas" id="asm"></canvas><br>Asm.js</div>
+			<div class="holder" id="jsDiv">
+				<canvas class="display-canvas" id="js"></canvas><br>JavaScript</div>
+			<canvas style="position:fixed; left:-1000px; visibility: hidden" id="dummy"></canvas>
+			<video style="display:none" width="320" height="240" autoplay id="videoElement">
 		</div>
+	</div>
 	</div>
 	<div id='graphHolder'>
 		<canvas id="graph"></canvas>

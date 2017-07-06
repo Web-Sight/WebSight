@@ -81,14 +81,14 @@ canvas{
 
 ul {
     list-style-type: none;
-    margin: 0;
+    margin: 0 0 0 50px;
     padding: 0;
-    display: inline-block;
+    display: inline-block;    
 }
 
 li{
     display:inline;
-    margin-right: 8px;    
+    margin-right: 8px;       
 }
 
 a{
@@ -185,8 +185,12 @@ label:hover {
     margin-top: 65px;
 }
 
+.social-media{
+    margin: 0;
+}
 .social-media img{
     width: 40px;
+    text-align: left;    
 }
 
 .profile p{
@@ -201,7 +205,15 @@ label:hover {
     display: none;
 }
 
+.logo{
+    position: absolute;
+    top: 3px;
+    left: 0px;
+    width: 50px;
+}
 
-
+#showcase{
+    position: relative;
+}
 
 
