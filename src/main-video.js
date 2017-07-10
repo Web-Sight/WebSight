@@ -82,7 +82,6 @@ function detect(type) {
         startWorker(canvases.wasm.context.getImageData(0, 0, canvases.wasm.canvas.width, canvases.wasm.canvas.height), objType, 'wasm');
         startWorker(canvases.asm.context.getImageData(0, 0, canvases.asm.canvas.width, canvases.asm.canvas.height), objType, 'asm');
         startWorker(canvases.js.context.getImageData(0, 0, canvases.js.canvas.width, canvases.js.canvas.height), objType, 'js');
-        setInterval(myChart.update(), 1000)
     }
 }
 
