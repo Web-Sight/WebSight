@@ -216,4 +216,16 @@ label:hover {
     position: relative;
 }
 
+#wasm-speed{
+    color: red;
+}
+
+#asm-speed{
+    color: rgba(0,191,255,1);
+}
+
+#js-speed{
+    color: green;
+}
+
 

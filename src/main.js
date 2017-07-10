@@ -4,10 +4,10 @@ let jsWorker = new Worker('js-worker.js');
 let asmWorker = new Worker('asm-worker.js');
 
 let wasmCanvas = { color: 'rgba(255, 0, 0, 1)', scale: 2 },
-  asmCanvas = { color: 'rgba(0, 0, 255, 1)', scale: 2 },
+  asmCanvas = { color: 'rgba(0,191,255,1)', scale: 2 },
   jsCanvas = { color: 'rgba(75,221,17,1)', scale: 2 };
 
-let perfwasm0, perfasm0, perfJS0, perfwasm1, perfasm1, perfjs1;
+let perfwasm0, perfasm0, perfJS0, perfwasm1, perfasm1, perfjs1, wasmRan, asmRan, jsRan;
 let img = new Image();
 
 function reset() {
@@ -17,6 +17,10 @@ function reset() {
   wasmCanvas.real.context.drawImage(img, 0, 0);
   asmCanvas.real.context.drawImage(img, 0, 0);
   jsCanvas.real.context.drawImage(img, 0, 0);
+
+  document.getElementById("wasm-speed").innerText = '';
+  document.getElementById("asm-speed").innerText = '';
+  document.getElementById("js-speed").innerText = '';
 }
 
 function detectFace() {
@@ -70,17 +74,33 @@ wasmWorker.onmessage = function (e) {
   updateCanvas(e, wasmCanvas);
   perfwasm1 = performance.now();
   console.log(`WASM: ${perfwasm1 - perfwasm0}`);
+  if (!wasmRan) {
+    wasmRan = true;
+  } else {
+    document.getElementById("wasm-speed").innerText = String((perfwasm1 - perfwasm0).toFixed(2)) + " MS";
+  }
 }
+
 asmWorker.onmessage = function (e) {
   updateCanvas(e, asmCanvas);
   perfasm1 = performance.now();
   console.log(`ASM: ${perfasm1 - perfasm0}`);
+  if (!asmRan) {
+    asmRan = true;
+  } else {
+    document.getElementById("asm-speed").innerText = String((perfasm1 - perfasm0).toFixed(2)) + " MS";
+  }
 }
 
 jsWorker.onmessage = function (e) {
   updateCanvas(e, jsCanvas);
   perfjs1 = performance.now();
   console.log(`JS: ${perfjs1 - perfJS0}`)
+  if (!jsRan) {
+    jsRan = true;
+  } else {
+    document.getElementById("js-speed").innerText = String((perfjs1 - perfJS0).toFixed(2)) + " MS";
+  }
 }
 
 let inputElement = document.getElementById('input');
@@ -161,4 +181,5 @@ window.onload = function () {
     detectFace();
   }, 3000);
 }
+
 
