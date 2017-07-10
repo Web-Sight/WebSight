@@ -42,7 +42,7 @@ canvases.asm.fpsArr = [];
 canvases.js.fpsArr = [];
 
 canvases.wasm.color = 'rgba(255, 0, 0, 1)';
-canvases.asm.color = 'rgba(	0,191,255, 1)';
+canvases.asm.color = 'rgba(0, 0, 255, 1)';
 canvases.js.color = 'rgba(0, 255, 0, 1)';
 canvases.width = 320;
 canvases.height = 240;
@@ -209,8 +209,7 @@ Chart.pluginService.register({
 
             ctx.save();
             ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-            ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
-            // ctx.restore();
+            ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);            
         }
     }
 });
