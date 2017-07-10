@@ -13,7 +13,9 @@ body{
 #title-p{
     margin-left: 0;
 }
-
+form{
+    margin:0 20px 0 0;
+}
 .holder{
     border: 1px solid black;
     background: white;
@@ -31,6 +33,7 @@ body{
 
 canvas{
    display: inline-block;
+   max-width: 99%;
 }
 
 

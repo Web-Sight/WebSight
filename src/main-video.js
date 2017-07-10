@@ -12,6 +12,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
 if (navigator.getUserMedia) {
     // get webcam feed if available
     navigator.getUserMedia({ video: true }, handleVideo, () => console.log('error with webcam'));
+    setTimeout(detect, 5000)
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -21,9 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
 function handleVideo(stream) {
     video.src = window.URL.createObjectURL(stream);
 }
+
 let canvases = {};
 canvases.running = false;
-canvases.max = 30;
+canvases.ready = false;
 canvases.wasm = {};
 canvases.asm = {};
 canvases.js = {};
@@ -41,7 +43,7 @@ canvases.asm.fpsArr = [];
 canvases.js.fpsArr = [];
 
 canvases.wasm.color = 'rgba(255, 0, 0, 1)';
-canvases.asm.color = 'rgba(0, 0, 255, 1)';
+canvases.asm.color = 'rgba(0, 191, 255, 1)';
 canvases.js.color = 'rgba(0, 255, 0, 1)';
 canvases.width = 320;
 canvases.height = 240;
@@ -74,22 +76,21 @@ canvases.chart.context = canvases.chart.canvas.getContext('2d');
 canvases.chart.canvas.width = canvases.width;
 canvases.chart.canvas.height = canvases.height;
 
-// console.log(`video: ${video.width}x${video.height}, dummy:${canvases.dummy.canvas.width}x ${canvases.dummy.canvas.height}`)
 function detect(type) {
     if (!canvases.running) {
         canvases.running = true;
         startWorker(canvases.wasm.context.getImageData(0, 0, canvases.wasm.canvas.width, canvases.wasm.canvas.height), objType, 'wasm');
         startWorker(canvases.asm.context.getImageData(0, 0, canvases.asm.canvas.width, canvases.asm.canvas.height), objType, 'asm');
-        startWorker(canvases.js.context.getImageData(0, 0, canvases.js.canvas.width, canvases.js.canvas.height), 'faceDetect', 'js');
+        startWorker(canvases.js.context.getImageData(0, 0, canvases.js.canvas.width, canvases.js.canvas.height), objType, 'js');
     }
 }
 
 function startWorker(imageData, command, type) {
     if (type == 'wasm')
-        canvases.dummy.context.drawImage(wasm, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
+        canvases.dummy.context.drawImage(wasm, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(imageData.width/ canvases.scale), Math.round(imageData.height/canvases.scale));
     let message = {
         cmd: command,
-        img: canvases.dummy.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height))
+        img: canvases.dummy.context.getImageData(0, 0, Math.round(imageData.width/ canvases.scale), Math.round(imageData.height/canvases.scale))
     };
     if (type == 'wasm') wasmWorker.postMessage(message);
     else if (type == 'asm') asmWorker.postMessage(message);
@@ -107,7 +108,6 @@ function selectObj(type) {
         document.getElementById('radio-eyes').checked = true;
         document.getElementById('radio-face').checked = false;
     }
-    console.log(objType)
     return;
 }
 
@@ -117,23 +117,20 @@ function updateCanvas(e, targetCanvas, plot) {
     targetCanvas.context.lineWidth = 2;
     let fps = 1000 / (targetCanvas.startTime - targetCanvas.lastTime)
     if (fps) {
-        fps > canvases.max ? canvases.max = fps : 0;
         targetCanvas.fpsArr.push(fps);
-        plot.holder.push(fps);
     }
-    if (plot.holder.length > 50) {
-        plot.holder.shift();
-        plot.displayPoints.push(Math.round((plot.holder.reduce((a, b) => a + b) / 50)));
-
-        if (plot.displayPoints.length > 10) {
-            plot.displayPoints.shift();
+    if (plot.displayPoints.length > 10) {
+        plot.displayPoints.shift();
+    }
+    if (canvases.js.fpsArr.length === 1 || canvases.asm.fpsArr.length === 2  || canvases.wasm.fpsArr.length === 4 ) {
+        targetCanvas.context.fps = Math.round((targetCanvas.fpsArr.reduce((a, b) => a + b) / targetCanvas.fpsArr.length) * 100) / 100;
+        if ( targetCanvas.context.fps > myChart.controller.options.scales.yAxes[0].ticks.max) {
+            myChart.controller.options.scales.yAxes[0].ticks.max =  targetCanvas.context.fps;
         }
-        myChart.update();
-    }
-    if (targetCanvas.fpsArr.length === 10) {
-        targetCanvas.context.fps = Math.round((targetCanvas.fpsArr.reduce((a, b) => a + b) / 10) * 100) / 100;
+        plot.displayPoints.push(targetCanvas.context.fps)
         targetCanvas.fpsArr = [];
     }
+    myChart.update();
     targetCanvas.context.fillStyle = 'rgba(255,255,255,.5)';
     targetCanvas.context.fillRect(0, 0, 90, 30)
     targetCanvas.context.font = "normal 14pt Arial";
@@ -147,8 +144,11 @@ function updateCanvas(e, targetCanvas, plot) {
 }
 
 wasmWorker.onmessage = function (e) {
-    if (e.data == 'start') {
-        detect()
+    if (e.data == 'wasm' || e.data == 'asm') {
+        if (canvases.ready) { detect() }
+        else {
+            canvases.ready = true
+        }
     }
     else {
         updateCanvas(e, canvases.wasm, wasmGraph);
@@ -160,11 +160,19 @@ wasmWorker.onmessage = function (e) {
 }
 
 asmWorker.onmessage = function (e) {
-    updateCanvas(e, canvases.asm, asmGraph);
-    requestAnimationFrame((asmTime) => {
-        canvases.asm.startTime = asmTime;
-        startWorker(canvases.asm.context.getImageData(0, 0, canvases.asm.canvas.width, canvases.asm.canvas.height), objType, 'asm')
-    });
+    if (e.data == 'wasm' || e.data == 'asm') {
+        if (canvases.ready) { detect() }
+        else {
+            canvases.ready = true
+        }
+    }
+    else {
+        updateCanvas(e, canvases.asm, asmGraph);
+        requestAnimationFrame((asmTime) => {
+            canvases.asm.startTime = asmTime;
+            startWorker(canvases.asm.context.getImageData(0, 0, canvases.asm.canvas.width, canvases.asm.canvas.height), objType, 'asm')
+        });
+    }
 }
 
 jsWorker.onmessage = function (e) {
@@ -227,12 +235,13 @@ let myChart = Chart.Line(ctx, {
                     color: "rgba(0,0,0,1)"
                 },
                 ticks: {
+                    display:false,
                     fontColor: "#F16327"
                 },
                 display: true,
                 scaleLabel: {
                     display: true,
-                    labelString: "Frames",
+                    labelString: "Inputs",
                     fontColor: "#F16327"
                 },
             }],
@@ -241,7 +250,7 @@ let myChart = Chart.Line(ctx, {
                     display: true,
                     ticks: {
                         min: 0,
-                        max: canvases.max,
+                        max: 30,
                         stepSize: 10,
                         fontColor: "#F16327"
                     },

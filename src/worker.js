@@ -122,4 +122,3 @@ self.onerror = function (e) {
 	console.log(e);
 }
 console.log('done loading worker')
-// postMessage('start')
