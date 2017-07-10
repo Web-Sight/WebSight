@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="icon" href="favicon.ico"/>
+    <link rel="icon" href="favicon.ico" />
     </style>
 </head>
 
@@ -21,10 +21,12 @@
         <img class="logo" src="./logoFinal.png" />
         <div id="title">
             <ul>
-                <li><p id="title-text">WebSight</p></li>
+                <li>
+                    <p id="title-text">WebSight</p>
+                </li>
                 <li><a href="./index-video.html">Video Demo</a></li>
                 <li><a style="font-weight:800 ; color:skyblue" href="./index.html">Image Demo</a></li>
-                <li><a  href="https://github.com/Web-Sight/WebSight" target="_blank">Github</a></li>
+                <li><a href="https://github.com/Web-Sight/WebSight" target="_blank">Github</a></li>
                 <li><a href="./about-us.html">About Us</a></li>
             </ul>
             <div class="button-class small" id="reset-button" onclick="reset()">Reset</div>
@@ -38,32 +40,29 @@
                 <div class="canvasHolder">
                     <canvas id="real-wasm"></canvas><br>
                 </div>
-                WASM
+                <p id="wasm-label">WebAssembly <span id="wasm-speed"></span></p>                
             </div>
+
             <div class="holder img-holder">
                 <div class="canvasHolder">
                     <canvas id="real-asm"></canvas><br> </div>
-                ASM
+                <p>ASM <span id="asm-speed"></span></p>      
             </div>
             <div class="holder img-holder">
                 <div class="canvasHolder">
                     <canvas id="real-js"></canvas><br> </div>
-                JS
+                <p>JS <span id="js-speed"></span></p>         
             </div>
         </div>
         <canvas class="real" id="canvas-wasm"></canvas>
         <canvas class="real" id="canvas-asm"></canvas>
         <canvas class="real" id="canvas-js"></canvas>
-    </div>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
-    <!--<script src="node_modules/jquery.facedetection/dist/jquery.facedetection.min.js"></script>-->
+    </div>        
     <script src="haar-detector.min.js"></script>
     <script src="haarcascade_frontalface_alt.js"></script>
     <script src="haarcascade_eye.js"></script>
     <script src='dat.gui.js'></script>
     <script src="parallel.min.js"></script>
-    <script src="main.js"></script>
-
-    <!--<script src="functions.js"></script>-->
+    <script src="main.js"></script>    
 
 </body>
