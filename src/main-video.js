@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function handleVideo(stream) {
     video.src = window.URL.createObjectURL(stream);
 }
+
 let canvases = {};
 canvases.running = false;
 canvases.ready = false;
@@ -42,7 +43,7 @@ canvases.asm.fpsArr = [];
 canvases.js.fpsArr = [];
 
 canvases.wasm.color = 'rgba(255, 0, 0, 1)';
-canvases.asm.color = 'rgba(0, 0, 255, 1)';
+canvases.asm.color = 'rgba(0, 191, 255, 1)';
 canvases.js.color = 'rgba(0, 255, 0, 1)';
 canvases.width = 320;
 canvases.height = 240;
@@ -75,7 +76,6 @@ canvases.chart.context = canvases.chart.canvas.getContext('2d');
 canvases.chart.canvas.width = canvases.width;
 canvases.chart.canvas.height = canvases.height;
 
-// console.log(`video: ${video.width}x${video.height}, dummy:${canvases.dummy.canvas.width}x ${canvases.dummy.canvas.height}`)
 function detect(type) {
     if (!canvases.running) {
         canvases.running = true;
@@ -88,10 +88,10 @@ function detect(type) {
 
 function startWorker(imageData, command, type) {
     if (type == 'wasm')
-        canvases.dummy.context.drawImage(wasm, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
+        canvases.dummy.context.drawImage(wasm, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(imageData.width/ canvases.scale), Math.round(imageData.height/canvases.scale));
     let message = {
         cmd: command,
-        img: canvases.dummy.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height))
+        img: canvases.dummy.context.getImageData(0, 0, Math.round(imageData.width/ canvases.scale), Math.round(imageData.height/canvases.scale))
     };
     if (type == 'wasm') wasmWorker.postMessage(message);
     else if (type == 'asm') asmWorker.postMessage(message);
@@ -120,13 +120,9 @@ function updateCanvas(e, targetCanvas, plot) {
     if (fps) {
         targetCanvas.fpsArr.push(fps);
     }
-    // if (plot.holder.length > 5) {
-    // plot.displayPoints.push(Math.round((plot.holder.reduce((a, b) => a + b) / 5)));
-
     if (plot.displayPoints.length > 10) {
         plot.displayPoints.shift();
     }
-    // }
     if (canvases.js.fpsArr.length === 1 || canvases.asm.fpsArr.length === 2  || canvases.wasm.fpsArr.length === 4 ) {
         targetCanvas.context.fps = Math.round((targetCanvas.fpsArr.reduce((a, b) => a + b) / targetCanvas.fpsArr.length) * 100) / 100;
         if ( targetCanvas.context.fps > myChart.controller.options.scales.yAxes[0].ticks.max) {

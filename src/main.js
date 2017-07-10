@@ -3,9 +3,9 @@ let wasmWorker = new Worker('wasm-worker.js');
 let jsWorker = new Worker('js-worker.js');
 let asmWorker = new Worker('asm-worker.js');
 
-let wasmCanvas = { color: 'rgba(255, 0, 0, 1)', scale: 2 },
-  asmCanvas = { color: 'rgba(0,191,255,1)', scale: 2 },
-  jsCanvas = { color: 'rgba(75,221,17,1)', scale: 2 };
+let wasmCanvas = { color: 'rgba(255, 0, 0, 1)', scale: 1 },
+  asmCanvas = { color: 'rgba(0,191,255,1)', scale: 1 },
+  jsCanvas = { color: 'rgba(75,221,17,1)', scale: 1 };
 
 let perfwasm0, perfasm0, perfJS0, perfwasm1, perfasm1, perfjs1, wasmRan, asmRan, jsRan;
 let img = new Image();
@@ -24,6 +24,9 @@ function reset() {
 }
 
 function detectFace() {
+  if (document.getElementById("wasm-speed").innerText) {
+    reset()
+  }
   perfasm0 = performance.now();
   startAsmWorker(asmCanvas.real.context.getImageData(0, 0, asmCanvas.real.canvas.width || 200, asmCanvas.real.canvas.height || 200), 'faceDetect');
   perfwasm0 = performance.now();
@@ -33,6 +36,9 @@ function detectFace() {
 }
 
 function detectEyes() {
+  if (document.getElementById("wasm-speed").innerText) {
+    reset()
+  }
   perfasm0 = performance.now();
   startAsmWorker(asmCanvas.real.context.getImageData(0, 0, asmCanvas.real.canvas.width || 200, asmCanvas.real.canvas.height || 200), 'eyesDetect');
   perfwasm0 = performance.now();
@@ -42,22 +48,22 @@ function detectEyes() {
 }
 
 function startWasmWorker(imageData, command) {
-  wasmCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
-  let message = { cmd: command, img: wasmCanvas.holder.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height)) };
+  wasmCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, imageData.width, imageData.height);
+  let message = { cmd: command, img: wasmCanvas.holder.context.getImageData(0, 0, imageData.width, imageData.height) };
 
   wasmWorker.postMessage(message);
 }
 
 function startAsmWorker(imageData, command) {
-  asmCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
-  let message = { cmd: command, img: asmCanvas.holder.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height)) };
+  asmCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, imageData.width, imageData.height);
+  let message = { cmd: command, img: asmCanvas.holder.context.getImageData(0, 0, imageData.width, imageData.height) };
 
   asmWorker.postMessage(message);
 }
 
 function startJSWorker(imageData, command) {
-  jsCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height));
-  let message = { cmd: command, img: jsCanvas.holder.context.getImageData(0, 0, Math.round(.5 * imageData.width), Math.round(.5 * imageData.height)) };
+  jsCanvas.holder.context.drawImage(img, 0, 0, imageData.width, imageData.height, 0, 0, imageData.width, imageData.height);
+  let message = { cmd: command, img: jsCanvas.holder.context.getImageData(0, 0, imageData.width, imageData.height) };
   jsWorker.postMessage(message);
 }
 

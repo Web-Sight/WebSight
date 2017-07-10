@@ -33,6 +33,7 @@ form{
 
 canvas{
    display: inline-block;
+   max-width: 99%;
 }
 
 
