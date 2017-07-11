@@ -1,5 +1,5 @@
-let wasmWorker = new Worker('wasm-worker.js');
 let asmWorker = new Worker('asm-worker.js');
+let wasmWorker = new Worker('wasm-worker.js');
 let jsWorker = new Worker('js-worker.js');
 
 let video = document.querySelector("#videoElement");
@@ -12,7 +12,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
 if (navigator.getUserMedia) {
     // get webcam feed if available
     navigator.getUserMedia({ video: true }, handleVideo, () => console.log('error with webcam'));
-    setTimeout(detect, 5000)
+    // setTimeout(detect, 8000)
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -144,8 +144,9 @@ function updateCanvas(e, targetCanvas, plot) {
 }
 
 wasmWorker.onmessage = function (e) {
-    if (e.data == 'wasm' || e.data == 'asm') {
-        if (canvases.ready) { detect() }
+    if (e.data.msg == 'wasm') {
+        if (canvases.ready) { 
+            setTimeout(detect, 2000) }
         else {
             canvases.ready = true
         }
@@ -160,8 +161,8 @@ wasmWorker.onmessage = function (e) {
 }
 
 asmWorker.onmessage = function (e) {
-    if (e.data == 'wasm' || e.data == 'asm') {
-        if (canvases.ready) { detect() }
+    if (e.data.msg == 'asm') {
+        if (canvases.ready) { setTimeout(detect, 2000)}
         else {
             canvases.ready = true
         }
