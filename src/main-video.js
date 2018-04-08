@@ -146,7 +146,8 @@ function updateCanvas(e, targetCanvas, plot) {
 wasmWorker.onmessage = function (e) {
     if (e.data.msg == 'wasm') {
         if (canvases.ready) { 
-            setTimeout(detect, 2000) }
+            detect();
+        }
         else {
             canvases.ready = true
         }
@@ -162,7 +163,9 @@ wasmWorker.onmessage = function (e) {
 
 asmWorker.onmessage = function (e) {
     if (e.data.msg == 'asm') {
-        if (canvases.ready) { setTimeout(detect, 2000)}
+        if (canvases.ready) {
+            detect();
+        }
         else {
             canvases.ready = true
         }
