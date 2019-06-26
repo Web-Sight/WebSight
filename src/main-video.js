@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }, false);
 
 function handleVideo(stream) {
-    video.src = window.URL.createObjectURL(stream);
+    video.srcObject = stream;
 }
 
 let canvases = {};
@@ -145,7 +145,7 @@ function updateCanvas(e, targetCanvas, plot) {
 
 wasmWorker.onmessage = function (e) {
     if (e.data.msg == 'wasm') {
-        if (canvases.ready) { 
+        if (canvases.ready) {
             detect();
         }
         else {
@@ -208,7 +208,7 @@ Chart.pluginService.register({
 
             ctx.save();
             ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-            ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);            
+            ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
         }
     }
 });
